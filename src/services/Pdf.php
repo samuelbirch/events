@@ -63,6 +63,23 @@ class Pdf extends Component
         return $url;
     }
 
+
+    public function getPdfUrlForEvent($event, $option = null)
+    {
+        $url = null;
+
+        try {
+            $path = "events/downloads/pdf?eventId={$event->id}" . ($option ? "&option={$option}" : '');
+            $path = Craft::$app->getConfig()->getGeneral()->actionTrigger . '/' . trim($path, '/');
+            $url = UrlHelper::siteUrl($path);
+        } catch (\Exception $e) {
+            Craft::error($e->getMessage());
+            return null;
+        }
+
+        return $url;
+    }
+
     public function renderPdf($tickets, $order = [], $lineItem = null, $option = '', $templatePath = null): string
     {
         $settings = Events::getInstance()->getSettings();

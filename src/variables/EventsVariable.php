@@ -134,4 +134,11 @@ class EventsVariable
     {
         return Events::$plugin->getPdf()->getPdfUrl($order);
     }
+
+    public function getEventPdfUrl(Event $event)
+    {
+        if (get_class($event) == Event::class) {
+            return Events::$plugin->getPdf()->getPdfUrlForEvent($event);
+        }
+    }
 }

@@ -35,6 +35,7 @@ class DownloadsController extends Controller
         $option = $request->getParam('option', '');
         $lineItemId = $request->getParam('lineItemId', '');
         $ticketId = $request->getParam('ticketId', '');
+        $eventId = $request->getParam('eventId','');
 
         $format = $request->getParam('format');
         $attach = $request->getParam('attach');
@@ -54,12 +55,14 @@ class DownloadsController extends Controller
         }
 
         $purchasedTickets = PurchasedTicket::find();
-		
-		if ($ticketId) {
-			$purchasedTickets->id($ticketId);
-		} else {
-			$purchasedTickets->orderId($order->id);
-		}
+        if ($ticketId) {
+            $purchasedTickets->id($ticketId);
+        } elseif ($eventId) {
+            $purchasedTickets->eventId($eventId)->customer(Commerce::getInstance()->getCustomers()->getCustomer());
+        } else {
+            $purchasedTickets->orderId($order->id);
+        }
+        
         $purchasedTickets->all();
 
         $pdf = Events::getInstance()->getPdf()->renderPdf($purchasedTickets, $order, $lineItem, $option);
